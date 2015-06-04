@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <widget xmlns   = "http://www.w3.org/ns/widgets"
+        xmlns:gap   = "http://phonegap.com/ns/1.0"
+        id          = "id.web.siemak.mobile"
+        versionCode = "1a" 
+        version     = "0.0.1b" >
+
+    <!-- versionCode is optional and Android only -->
+	<gap:platform name="android" />
+    <name>Admin Siemak Mobile</name>
+
+    <description>
+       Aplikasi SIEMAK Untuk Administrator
+    </description>
+
+    <author href="https://arisis.my.id" email="aris.winchester@gmail.com">
+        Aris Eko Priyanto
+    </author>
+	<icon src="logo-utm.png"/>
+</widget>

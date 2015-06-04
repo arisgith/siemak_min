@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<!--Import materialize.css-->
+		<link type="text/css" rel="stylesheet" href="css/materialize.css"  media="screen,projection"/>
+
+		<!--Let browser know website is optimized for mobile-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+	</head>
+
+	<body>
+		<nav class="light-blue lighten-1" role="navigation">
+			<div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Dashboard</a>
+				<!--ul class="right hide-on-med-and-down">
+					<li><a href="#">Navbar Link</a></li>
+				</ul-->
+			
+				<ul id="nav-mobile" class="side-nav">
+					<li><a href="index.html">Log Out</a></li>
+				</ul>
+				<a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+			</div>
+		</nav>
+		
+		<div class="container" id="me">
+			<div class="row">
+				<h4 class="header center orange-text">Selamat Datang</h4>
+				<!--Profil-->
+				<div class="col s12">
+					<table class="bordered">
+						<tr>
+							<td>Nama</td>
+							<td id="nama">
+								<!--preloader-->
+								<div class="progress wait">
+									<div class="indeterminate"></div>
+								</div>
+								<!--preloader-->
+							</td>
+						</tr>
+						<tr>
+							<td>Status</td>
+							<td id="status">
+								<!--preloader-->
+								<div class="progress wait">
+									<div class="indeterminate"></div>
+								</div>
+								<!--preloader-->
+							</td>
+						</tr>
+						<tr>
+							<td>Semester</td>
+							<td id="semester">
+								<!--preloader-->
+								<div class="progress wait">
+									<div class="indeterminate"></div>
+								</div>
+								<!--preloader-->
+							</td>
+						</tr>
+						<tr>
+							<td>Log</td>
+							<td id="lastlog" class="center-align">
+								<!--preloader-->
+								<div class="progress wait">
+									<div class="indeterminate"></div>
+								</div>
+								<!--preloader-->
+							</td>
+						</tr>
+					</table>
+				</div>
+				<!--Profil-->
+				<div class="grid-example col s12 m6">
+					<span id="content">	
+					</span>
+				</div>
+				<hr/>
+				
+				<span id="total_mk" colspan="2">
+					<!--preloader-->
+					<div class="progress wait">
+						<div class="indeterminate"></div>
+					</div>
+					<!--preloader-->
+				</span>
+				
+				<table class="responsive-table">
+					<thead>
+					<tr>
+						<th data-field="id">Kode</th>
+						<th data-field="name">Mata Kuliah</th>
+						<th data-field="price">Status Form</th>
+					</tr>
+					</thead>
+
+					<tbody id='isi_mk'>
+						<!--preloader-->
+						<tr class="wait">
+							<td colspan="3">
+								<div class="progress ">
+									<div class="indeterminate"></div>
+								</div>
+							</td>
+						</tr>
+						<!--preloader-->
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<footer class="page-footer light-blue lighten-1">
+			<div class="footer-copyright light-blue lighten-1">
+				<div class="container center-align">
+					&copy; 2015 JAMU Teknik Informatika Trunojoyo Madura
+				</div>
+			</div>
+		</footer>
+
+
+		<!--  Scripts-->
+		<script src="js/jquery-2.1.1.min.js"></script>
+		<script src="js/materialize.js"></script>
+		<script src="js/init.js"></script>
+		<script>
+			$("#me").css("display", "none");
+			//fungsi untuk get url parameter buat data di ajax
+			 function getUrlParameter(sParam)
+			{
+				var sPageURL = window.location.search.substring(1);
+				var sURLVariables = sPageURL.split('&');
+				for (var i = 0; i < sURLVariables.length; i++) 
+				{
+					var sParameterName = sURLVariables[i].split('=');
+					if (sParameterName[0] == sParam) 
+					{
+						return sParameterName[1];
+					}
+				}
+			}         
+		   
+		   $.ajaxSetup ({
+				// Disable caching of AJAX responses
+				cache: false
+			});
+			
+			var email = getUrlParameter('email');
+			var password = getUrlParameter('pass') ;
+			
+			$(document).ready(function(){
+				$.ajax({
+					type       		: "GET",
+					//url       	: "http://arisis.my.id/jsonp/index.php",
+					//url       		: "http://siemak.web.id/api_m/login_api_admin",
+					url        	: "http://siemak.ta/api_m/login_api_admin",
+					data      		: {email : email , password : password},
+					jsonpCallback   : "A97ac68d16d468ef7d1800251926cca0e",
+					dataType   		: 'jsonp',
+					success    		: function(response) {
+						if(response.valid == 'Ya'){
+							$(".wait").css("display", "none");
+							$("#me").css("display", "block");
+							$('#nama').html(response.nama);
+							$('#status').html(response.status);
+							$('#semester').html(response.semester);
+							$('#lastlog').html(response.lastlog);
+							$('#total_mk').append('Total Mata Kuliah: '+response.total_mk);
+							
+							//looping that
+							$.each(response.mk, function(i, item) {
+								//alert("kode_mk="+item.kode_mk+"\n");
+								if(item.form_status == 1){
+									statuse_mk = 'sudah terisi';
+								}
+								else if(item.kode_mk == 'TIF136'){
+									statuse_mk = 'Form Tidak Tersedia';
+								}
+								else{
+									statuse_mk = '<a href="kuis.html?nrp='+item.id_mhw+'&mk='+item.mk_mhw+'&id_mk_mhw='+item.id_mk_mhw+'&kelas='+item.kelas+'&dosen='+item.dosen+'&kode_mk='+item.kode_mk+'&password='+password+'">Isi</a>';
+								}
+								
+								mk_to_id ='<tr><td>'+item.kode_mk+'</td><td>'+item.mk_mhw+'</td><td>'+statuse_mk+'</td></tr>';
+								$('#isi_mk').append(mk_to_id);
+							});
+							
+						}
+						else{
+							alert('Mohon Periksa Kembali Username / Password Anda!');
+							window.location.replace("index.html"); 
+						//	hasile = '<p>'+ response.pesan +'<p>';
+						//	$('#content').html(hasile);
+						}
+					},
+					error      : function() {
+						alert('Terjadi Kesalahan Login!');
+						window.location.replace("index.html");                        
+					}
+				});
+				
+			});
+		</script>
+	</body>
+</html>
