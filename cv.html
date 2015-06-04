@@ -17,8 +17,8 @@
 			
 				<ul id="nav-mobile" class="side-nav">
 					<li><a href="#">Menu</a></li>
+					<li><a href="home.html">Home</a></li>
 					<li class="bold"><a class="collapsible-header waves-effect waves-teal">Metode dan KPI</a> </li>
-					<li><a href="cv.html">Cumulative Voting (CV)</a></li>
 					<li><a href="dialogs.html">Enhanced Cumulative Voting</a></li>
 					<li><a href="dropdown.html">KPI</a></li>
 				</ul>
@@ -31,39 +31,20 @@
 				<h4 class="header center orange-text">Selamat Datang Admin</h4>
 				<!--Profil-->
 				<div class="col s12">
-					<div class="col s12 m4">
-						<div class="card blue-grey darken-1">
-							<div class="card-content white-text">
-								<span class="card-title">Total Mahasiswa</span>
-								<p id="nama"></p>
-							</div>
-							<div class="card-action">
-								<a href="#">Lihat Detail</a>
-							</div>
-						</div>
-					</div>
-					<div class="col s12 m4">
-						<div class="card blue-grey darken-1">
-							<div class="card-content white-text">
-								<span class="card-title">Total Kuis</span>
-								<p id="total_kuis"></p>
-							</div>
-							<div class="card-action">
-								<a href="#">Lihat Detail</a>
-							</div>
-						</div>
-					</div>
-					<div class="col s12 m4">
-						<div class="card blue-grey darken-1">
-							<div class="card-content white-text">
-								<span class="card-title">Total Mata Kuliah</span>
-								<p id="total_mk"></p>
-							</div>
-							<div class="card-action">
-								<a href="#">Lihat Detail</a>
-							</div>
-						</div>
-					</div>
+					<table class="striped responsive-table centered">
+						 <thead>
+							<tr>
+								<th>Mata Kuliah</th>
+								<th>Kelas</th>
+								<th>Jumlah Point</th>
+								<th>Rata-rata</th>
+								<th>IPD</th>
+								<th>Total Mahasiswa</th>
+							</tr>
+						</thead>
+						<tbody id="isi_mk">
+						</tbody>
+					</table>
 				</div>
 				<!--Profil-->
 				<div class="grid-example col s12 m6">
@@ -118,7 +99,7 @@
 					type       		: "GET",
 					//url       	: "http://arisis.my.id/jsonp/index.php",
 					//url       	: "http://siemak.web.id/api_m/login_api_admin",
-					url     	   	: "http://siemak.ta/api_m/login_api_admin",
+					url     	   	: "http://siemak.ta/api_m/get_cv",
 					//data      		: {email : email , password : password},
 					data      		: {email : 'aris.winchester@gmail.com' , password : 'Ar1515my'},
 					jsonpCallback   : "B97ac68d16d468ef7d1800251926cca0e",
@@ -127,25 +108,13 @@
 						if(response.valid == 'Ya'){
 							$(".wait").css("display", "none");
 							$("#me").css("display", "block");
-							$('#nama').html(response.total_mahasiswa);
-							$('#total_kuis').html(response.total_kuis);
-							$('#total_mk').append(response.total_mk);
 							
 							//looping that
-							$.each(response.mk, function(i, item) {
-								//alert("kode_mk="+item.kode_mk+"\n");
-								if(item.form_status == 1){
-									statuse_mk = 'sudah terisi';
-								}
-								else if(item.kode_mk == 'TIF136'){
-									statuse_mk = 'Form Tidak Tersedia';
-								}
-								else{
-									statuse_mk = '<a href="kuis.html?nrp='+item.id_mhw+'&mk='+item.mk_mhw+'&id_mk_mhw='+item.id_mk_mhw+'&kelas='+item.kelas+'&dosen='+item.dosen+'&kode_mk='+item.kode_mk+'&password='+password+'">Isi</a>';
-								}
+							$.each(response.hasil, function(i, item) {
+								//alert("kode_mk="+item.link+"\n");
 								
-								mk_to_id ='<tr><td>'+item.kode_mk+'</td><td>'+item.mk_mhw+'</td><td>'+statuse_mk+'</td></tr>';
-								$('#isi_mk').append(mk_to_id);
+								cv ='<tr><td>'+item.link+'</td><td>'+item.kelas+'</td><td>'+item.jumlah_point+'</td><td>'+item.rata_rata+'</td><td>'+item.ipd+'</td>><td>'+item.jumlah_mhw+'</td></tr>';
+								$('#isi_mk').append(cv);
 							});
 							
 						}
